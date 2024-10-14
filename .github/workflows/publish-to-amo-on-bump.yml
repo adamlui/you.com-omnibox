@@ -6,7 +6,7 @@ on:
     paths: [firefox/extension/manifest.json]
 
 jobs:
-  check-version:
+  check-version-to-publish:
     runs-on: ubuntu-latest
     steps:
 

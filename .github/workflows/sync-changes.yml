@@ -1,4 +1,4 @@
-name: Sync _locales/* between <chromium|firefox>/extension/, then * to adamlui/ai-apps/you.com-omnibox/*
+name: Sync _locales/ between <chromium|firefox>/extension/, then ** to adamlui/ai-apps/you.com-omnibox/
 
 on:
   push:
@@ -29,7 +29,7 @@ jobs:
           repository: adamlui/ai-apps
           path: adamlui/ai-apps
 
-      - name: Sync _locales/* between <chromium|firefox>/extension/
+      - name: Sync _locales/ between <chromium|firefox>/extension/
         run: |
           cd ${{ github.workspace }}/adamlui/you.com-omnibox
           ff_dir="firefox/extension/_locales"
@@ -54,7 +54,7 @@ jobs:
               fi
           done
 
-      - name: Sync * to adamlui/ai-apps/you.com-omnibox/*
+      - name: Sync ** to adamlui/ai-apps/you.com-omnibox/
         run: |
           rsync -avhr --delete --exclude={'.*','eslint*','package*json'} \
             ${{ github.workspace }}/adamlui/you.com-omnibox/ \

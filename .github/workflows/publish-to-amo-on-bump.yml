@@ -1,4 +1,4 @@
-name: Publish to AMO on version bump
+name: Publish to AMO on FF version bump
 
 on:
   push:
@@ -18,7 +18,7 @@ jobs:
           path: adamlui/you-omnibox
           fetch-depth: 2
 
-      - name: Check manifest for version bump
+      - name: Check FF manifest for version bump
         run: |
           cd ${{ github.workspace }}/adamlui/you-omnibox
           CURRENT_VER=$(cat firefox/extension/manifest.json | grep '"version"' | sed -E 's/.*"version": "(.*)".*/\1/')

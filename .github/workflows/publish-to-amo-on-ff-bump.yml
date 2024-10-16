@@ -13,14 +13,11 @@ jobs:
       - name: Checkout adamlui/you.com-omnibox
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.REPO_SYNC_PAT }}
-          repository: adamlui/you.com-omnibox
-          path: adamlui/you-omnibox
+          sparse-checkout: firefox
           fetch-depth: 2
 
       - name: Check FF manifest for version bump
         run: |
-          cd ${{ github.workspace }}/adamlui/you-omnibox
           CURRENT_VER=$(cat firefox/extension/manifest.json | grep '"version"' | sed -E 's/.*"version": "(.*)".*/\1/')
           PREV_VER=$(git show HEAD^:firefox/extension/manifest.json | grep '"version"' | sed -E 's/.*"version": "(.*)".*/\1/')
           if [ "$(printf '%s\n' "$PREV_VER" "$CURRENT_VER" | sort -V | head -n 1)" != "$CURRENT_VER" ] ; then
@@ -31,14 +28,14 @@ jobs:
       - name: Create zipball
         if: env.VERSION_CHANGED == 'true'
         run: |
-          cd ${{ github.workspace }}/adamlui/you-omnibox/firefox/extension
+          cd firefox/extension
           zip -r ../../extension.zip .
 
       - name: Publish to AMO
         if: env.VERSION_CHANGED == 'true'
         uses: cardinalby/webext-buildtools-firefox-addons-action@v1
         with:
-          zipFilePath: "${{ github.workspace }}/adamlui/you-omnibox/extension.zip"
+          zipFilePath: 'extension.zip'
           extensionId: 'you.com.omnibox@adamlui.com'
           jwtIssuer: ${{ secrets.AMO_ISSUER }}
           jwtSecret: ${{ secrets.AMO_SECRET }}

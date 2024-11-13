@@ -38,5 +38,5 @@ jobs:
           extensionId: 'you.com.omnibox@adamlui.com'
           jwtIssuer: ${{ secrets.AMO_ISSUER }}
           jwtSecret: ${{ secrets.AMO_SECRET }}
-          zipFilePath: 'extension.zip'
+          zipFilePath: extension.zip
         continue-on-error: true

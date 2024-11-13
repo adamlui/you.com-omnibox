@@ -2,9 +2,9 @@ import js from '@eslint/js'
 import json from 'eslint-plugin-json'
 
 export default [
-    js.configs.recommended,
     {
         rules: {
+            files: ['**/*.js', '**/*.mjs'], ...js.configs.recommended,
             'indent': 'off', 'no-unexpected-multiline': 'off', 'key-spacing': 'off', // allow whitespace anywhere
             'quotes': ['error', 'single', { 'allowTemplateLiterals': true }], // enforce single quotes except backticks to avoid escaping quotes
             'comma-dangle': ['error', 'never'], // enforce no trailing commas in arrays or objects

@@ -59,7 +59,7 @@ jobs:
 
       - name: Sync ** to adamlui/ai-apps/you.com-omnibox/
         run: |
-          rsync -avhr --delete --exclude={'.*','eslint*','package*.json'} \
+          rsync -avhr --delete --exclude={'.*'} \
             ${{ github.workspace }}/adamlui/you.com-omnibox/ \
             ${{ github.workspace }}/adamlui/ai-apps/you.com-omnibox/
 

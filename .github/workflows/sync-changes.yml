@@ -3,7 +3,7 @@ name: Sync _locales/ between <chromium|firefox>/extension/, then ** to adamlui/a
 on:
   push:
     branches: [main]
-    paths: ["**", "!.*", "!package*.json", "!eslint.config*"]
+    paths: ["**", "!.*"]
 
 jobs:
   build:
@@ -59,7 +59,7 @@ jobs:
 
       - name: Sync ** to adamlui/ai-apps/you.com-omnibox/
         run: |
-          rsync -avhr --delete --exclude={'.*'} \
+          rsync -avhr --delete --exclude '.*' \
             ${{ github.workspace }}/adamlui/you.com-omnibox/ \
             ${{ github.workspace }}/adamlui/ai-apps/you.com-omnibox/
 

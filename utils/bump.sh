@@ -7,11 +7,12 @@
 shopt -s nocasematch # enable case-insensitive matching (to flexibly check commit msg for bumps)
 
 # Init UI COLORS
-NC="\033[0m"    # no color
-BR="\033[1;91m" # bright red
-BY="\033[1;33m" # bright yellow
-BG="\033[1;92m" # bright green
-BW="\033[1;97m" # bright white
+NC="\033[0m"        # no color
+DG="\033[38;5;243m" # dim gray
+BR="\033[1;91m"     # bright red
+BY="\033[1;33m"     # bright yellow
+BG="\033[1;92m"     # bright green
+BW="\033[1;97m"     # bright white
 
 # Parse ARGS
 if [[ "$1" == *chrom* ]] ; then chromium_only=true
@@ -37,18 +38,18 @@ for manifest_path in "${MANIFEST_PATHS[@]}" ; do
 
     # Check latest commit for extension changes if forcible platform flag not set
     platform_manifest_path=$(dirname "$manifest_path" | sed 's|^\./||')
-    if [ "$chromium_only" != true ] && [ "$ff_only" != true ] ; then
+    if [[ ! "$chromium_only $ff_only" =~ true ]] ; then
         echo "Checking last commit details for $platform_manifest_path..."
         latest_platform_commit_msg=$(git log -1 --format=%s -- "$platform_manifest_path")
-        if [[ $latest_platform_commit_msg == bump*(version|manifest)* ]] ; then
+        echo -e "${DG}${latest_platform_commit_msg}${NC}\n"
+        if [[ $latest_platform_commit_msg =~ bump.*(ersion|manifest) ]] ; then
             echo -e "No changes found. Skipping...\n" ; continue ; fi
     fi
 
     # Echo begin bump
-    manifest_prefix=""
-    if [ "$chromium_only" = true ] ; then manifest_prefix="Chromium "
-    elif [ "$ff_only" = true ] ; then manifest_prefix="Firefox " ; fi
-    echo -e "Bumping version in ${manifest_prefix}manifest..."
+    if [ "$chromium_only" = true ] ; then manifest_prefix="Chromium"
+    elif [ "$ff_only" = true ] ; then manifest_prefix="Firefox" ; fi
+    echo "Bumping version in ${manifest_prefix} manifest..."
 
     # Determine old/new versions
     old_ver=$(sed -n 's/.*"version": *"\([0-9.]*\)".*/\1/p' "$manifest_path")
@@ -61,26 +62,25 @@ for manifest_path in "${MANIFEST_PATHS[@]}" ; do
     new_versions+=("$new_ver")
 
     # Bump old version
-    sed -i "s/\"version\": \"$old_ver\"/\"version\": \"$new_ver\"/" "$manifest_path"
+    sed -i "s/\"$old_ver\"/\"$new_ver\"/" "$manifest_path"
     echo -e "Updated: ${BW}v${old_ver}${NC} → ${BG}v${new_ver}${NC}\n"
     ((bumped_cnt++))
 
 done
+if (( $bumped_cnt == 0 )) ; then echo -e "${BW}Completed. No manifests bumped.${NC}" ; exit 0 ; fi
 
-# COMMIT/PUSH bump(s)
-if (( $bumped_cnt == 0 )) ; then echo -e "${BW}Completed. No manifests bumped.${NC}"
-else
-    plural_suffix=$((( $bumped_cnt > 1 )) && echo "s")
-    echo -e "${BG}${bumped_cnt} manifest${plural_suffix} bumped!\n${NC}"
-    echo -e "${BY}Committing bump${plural_suffix} to Git...\n${NC}"
+# PULL latest changes
+echo -e "${BY}Pulling latest changes from remote to sync local repository...${NC}\n"
+git pull || (echo -e "${BR}Merge failed, please resolve conflicts!${NC}" && exit 1)
+echo ''
 
-    # Define commit msg
-    COMMIT_MSG="Bumped \`version\`"
-    unique_versions=($(printf "%s\n" "${new_versions[@]}" | sort -u))
-    if (( ${#unique_versions[@]} == 1 )) ; then COMMIT_MSG+=" to \`${unique_versions[0]}\`" ; fi
-
-    # Commit/push bump(s)
-    git add ./**/manifest.json && git commit -n -m "$COMMIT_MSG"
-    git push
-    echo -e "\n${BG}Success! ${bumped_cnt} manifest${plural_suffix} updated/committed/pushed to GitHub${NC}"
-fi
+# ADD/COMMIT/PUSH bump(s)
+plural_suffix=$((( $bumped_cnt > 1 )) && echo "s")
+echo -e "${BG}${bumped_cnt} manifest${plural_suffix} bumped!\n${NC}"
+echo -e "${BY}Committing bump${plural_suffix} to Git...\n${NC}"
+COMMIT_MSG="Bumped \`version\`"
+unique_versions=($(printf "%s\n" "${new_versions[@]}" | sort -u))
+if (( ${#unique_versions[@]} == 1 )) ; then COMMIT_MSG+=" to \`${unique_versions[0]}\`" ; fi
+git add ./**/manifest.json && git commit -n -m "$COMMIT_MSG"
+git push
+echo -e "\n${BG}Success! ${bumped_cnt} manifest${plural_suffix} updated/committed/pushed to GitHub${NC}"

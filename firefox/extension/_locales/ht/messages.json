@@ -1,5 +1,6 @@
 {
   "appName": { "message": "You.com Omnibox" },
   "appAuthor": { "message": "Adam Lui" },
-  "appDesc": { "message": "Tape @you nan ba adrès la pou jwenn rezilta You.com AI" }
+  "appDesc": { "message": "Tape @you nan ba adrès la pou jwenn rezilta You.com AI" },
+  "prefix_ask": { "message": "Mande" }
 }

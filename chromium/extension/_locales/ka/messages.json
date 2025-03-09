@@ -1,5 +1,6 @@
 {
   "appName": { "message": "You.com Omnibox" },
   "appAuthor": { "message": "Adam Lui" },
-  "appDesc": { "message": "Აკრიფეთ @you მისამართის ზოლში, რომ მიიღოთ შედეგები You.com AI-სგან" }
+  "appDesc": { "message": "Აკრიფეთ @you მისამართის ზოლში, რომ მიიღოთ შედეგები You.com AI-სგან" },
+  "prefix_ask": { "message": "კითხვა" }
 }

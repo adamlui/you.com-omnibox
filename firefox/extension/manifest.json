@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "__MSG_appName__",
-  "short_name": "You.com 🔎",
+  "short_name": "__MSG_prefix_ask__ You.com AI",
   "description": "__MSG_appDesc__",
   "version": "2025.2.18",
   "author": "Adam Lui",
@@ -14,10 +14,10 @@
     "64": "icons/icon64.png",
     "128": "icons/icon128.png"
   },
-  "action": { "default_title": "Ask You.com AI" },
+  "action": { "default_title": "__MSG_prefix_ask__ You.com AI" },
   "chrome_settings_overrides": {
     "search_provider": {
-      "name": "You.com",
+      "name": "You.com AI",
       "search_url": "https://www.you.com/search?q={searchTerms}&tbm=youchat",
       "favicon_url": "icons/icon16.png",
       "keyword": "@you",
